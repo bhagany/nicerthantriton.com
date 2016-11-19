@@ -61,7 +61,8 @@
           topics (->> (perun/get-meta fileset)
                       (mapcat :tags)
                       (map #(get ntt/tag-topics %))
-                      set)]
+                      set
+                      (sort-by #(.indexOf ntt/topic-order %)))]
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (deftask dev

@@ -14,6 +14,11 @@
                  (map #(-> [% c]) ts)))
        (into {})))
 
+(def topic-order
+  ["Programming"
+   "Space"
+   "Math"])
+
 (defn slugify
   [i]
   (when (seq i)
