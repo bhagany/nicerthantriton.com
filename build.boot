@@ -74,7 +74,7 @@
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
-        (p/assortment :renderer 'nicerthantriton.core/topics :grouper tagify)
+        (p/assortment :renderer 'nicerthantriton.core/topic :grouper tagify)
         (reload :asset-path "/public")
         (cljs)
         (p/print-meta)))

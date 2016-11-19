@@ -23,7 +23,7 @@
 
 (defn topic-href
   [topic]
-  (str "/topics/" (slugify topic) ".html"))
+  (str "topics/" (slugify topic) ".html"))
 
 (defn design [data content]
   (hp/html5
@@ -63,7 +63,7 @@
         [:div.topics
          [:h3 "Topics"]
          [:ul.topics
-          (map #(-> [:li [:a.topic {:class (slugify %) :href (topic-href %)} %]]) (-> data :meta :topics))]]
+          (map #(-> [:li [:a.topic {:class (slugify %) :href (str "/" (topic-href %))} %]]) (-> data :meta :topics))]]
         [:div.recent
          [:h3 "Recent Posts"]
          [:ul.recent
@@ -97,11 +97,11 @@
                      [:p.posted (.format df date-published)]))
                  [:p.tags
                   (map #(let [topic (get tag-topics %)]
-                          [:a {:href (topic-href topic) :class (str (slugify topic) " tag")} %])
+                          [:a {:href (str "/" (topic-href topic)) :class (str (slugify topic) " tag")} %])
                        (-> data :entry :tags))]]]
    (design data content)))
 
-(defn topics
+(defn topic
   [data]
   (let [topic (-> data :entry :topic)
         content [[:h2 {:class (str "title " (slugify topic))} topic]
