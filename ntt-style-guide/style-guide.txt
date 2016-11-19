@@ -1,0 +1,47 @@
+TYPOGRAPHY
+
+Typefaces
+— Site Title - Della Respira 48px
+- Post Title  - Della Respira 36px
+- Subheading - Della Respira 24px
+- Paragraph - Open Sans 16px
+- Caption - Open Sans Italic 12px
+- Code Snippet - Courier New 16px (or Cutive Mono or any monospace typeface)
+
+Line Height
+- Paragraph Text - 1.5em
+- After Paragraph - 2.25em
+
+Column Widths
+- Main - 32em (512px)
+- Side Bar - 16em (256px)
+
+
+COLORS
+
+Text
+- Dark Gray #474747
+
+Link
+- Indigo #4747C0
+
+Link Underline
+- Light Indigo #C4C4EB
+
+Line Decorations
+- Light Gray #BFBFBF
+
+Background
+- White
+
+Tags
+- Green #4AF26D
+- Blue #4AB6FF
+- Lavender #B69FFF
+- Magenta #F784DC
+- Red #FF6C85
+- Orange #FFB05A
+- Yellow #F4F062
+
+Code Snippet Background
+- Light Blue #DFECF2
