@@ -65,17 +65,21 @@
                       (sort-by #(.indexOf ntt/topic-order %)))]
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
-(deftask dev
+(deftask build
   []
-  (comp (serve :resource-root "public/")
-        (watch)
-        (p/markdown)
+  (comp (p/markdown)
         (p/slug :slug-fn slugify-filename)
         (p/permalink :permalink-fn permalinkify)
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
         (p/assortment :renderer 'nicerthantriton.core/topic :grouper tagify)
+        (cljs)))
+
+(deftask dev
+  []
+  (comp (serve :resource-root "public/")
         (reload :asset-path "/public")
-        (cljs)
+        (watch)
+        (build)
         (p/print-meta)))
