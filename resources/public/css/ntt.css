@@ -166,24 +166,25 @@ div#sidebar h3 {
 
 div#header div.barb, div#footer div.hr {
     padding-left: 24px;
+    background-position: 24px 0;
 }
 
 div.barb-hr {
     display: table;
     width: 100%;
-    margin-top: 32px;
+    margin-top: 34px;
 }
 
-div.barb-hr.up.right div.barb img {
+div.barb-hr.up.right div.barb {
     transform: rotate(180deg);
 }
 
-div.barb-hr.down.right div.barb img {
+div.barb-hr.down.right div.barb {
     transform: scaleX(-1);
 }
 
-div.barb-hr.up div.hr img {
-    transform: scaley(-1);
+div.barb-hr.up div.hr {
+    transform: scaleY(-1);
 }
 
 div.barb-hr div {
@@ -192,11 +193,13 @@ div.barb-hr div {
 
 div.barb {
     width: 32px;
+    height: 16px;
+    background: url('/images/barb.svg') top left no-repeat;
 }
 
-div.hr img {
-    width: 100%;
+div.hr {
     height: 16px;
+    background: url('/images/hr.svg') repeat-x;
 }
 
 img.sidebar-logo, img.star {

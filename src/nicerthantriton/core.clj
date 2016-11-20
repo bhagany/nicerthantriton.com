@@ -56,40 +56,41 @@
      [:div#wrapper
       [:div#header
        [:a.logo {:href "/"}
-        [:img {:src "/images/ntt-logo.svg"}]
+        [:img {:src "/images/ntt-logo.svg" :width "108px" :height "108px"}]
         [:h1 "Nicer than Triton"]]
        [:div.barb-hr.down.left
-        [:div.barb [:img {:src "/images/barb.svg"}]]
-        [:div.hr [:img {:src "/images/hr.svg"}]]]]
+        [:div.barb]
+        [:div.hr]]]
       (into [:div#content] content)
       [:div#sidebar
        [:div.barb-hr.up.right
-        [:div.hr [:img {:src "/images/hr.svg"}]]
-        [:div.barb [:img {:src "/images/barb.svg"}]]]
+        [:div.hr]
+        [:div.barb]]
        [:p "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."]
        [:div#sidebar-content
         social-ul
         [:div.topics
          [:h3 "Topics"]
          [:ul.topics
-          (map #(-> [:li [:a.topic {:class (slugify %) :href (str "/" (topic-href %))} %]]) (-> data :meta :topics))]]
+          (map #(-> [:li [:a.topic {:class (slugify %) :href (str "/" (topic-href %))} %]])
+               (-> data :meta :topics))]]
         [:div.recent
          [:h3 "Recent Posts"]
          [:ul.recent
           (map #(-> [:li [:a {:href (:permalink %)} (:title %)]])
                (-> data :meta :recent-posts))]]
         [:div.barb-hr.down.right
-         [:div.hr [:img {:src "/images/hr.svg"}]]
-         [:div.barb [:img {:src "/images/barb.svg"}]]]
+         [:div.hr]
+         [:div.barb]]
         [:div#flair
-         [:img.sidebar-logo {:src "/images/ntt-logo-outline.svg"}]
+         [:img.sidebar-logo {:src "/images/ntt-logo-outline.svg" :width "78px" :height "70px"}]
          [:p#nicer-reason]]]]
       [:div#footer
        [:div.barb-hr.up.right
-        [:div.hr [:img {:src "/images/hr.svg"}]]
-        [:div.barb [:img {:src "/images/barb.svg"}]]]
+        [:div.hr]
+        [:div.barb]]
        [:a.logo {:href "/"}
-        [:img {:src "/images/ntt-logo-outline.svg"}]
+        [:img {:src "/images/ntt-logo-outline.svg" :width "78px" :height "70px"}]
         [:h1 "Nicer than Triton"]]
        social-ul]]]]))
 
@@ -97,7 +98,7 @@
   (let [content [[:h2 {:class (str "title " (slugify (get tag-topics (-> data :entry :tags first))))}
                   (-> data :entry :title)]
                  (-> data :entry :content)
-                 [:img.star {:src "/images/star.svg"}]
+                 [:img.star {:src "/images/star.svg" :width "32px" :height "32px"}]
                  (if-let [date-published (-> data :entry :date-published)]
                    (let [df (java.text.SimpleDateFormat. "d MMMM yyyy")]
                      (.setTimeZone df (java.util.TimeZone/getTimeZone "UTC"))
