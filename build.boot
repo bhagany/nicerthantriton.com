@@ -67,13 +67,16 @@
 
 (deftask build
   []
-  (comp (p/markdown)
+  (comp (p/global-metadata)
+        (p/markdown)
         (p/slug :slug-fn slugify-filename)
         (p/permalink :permalink-fn permalinkify)
+        (p/canonical-url)
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
         (p/assortment :renderer 'nicerthantriton.core/topic :grouper tagify)
+        (p/atom-feed)
         (cljs)))
 
 (deftask dev

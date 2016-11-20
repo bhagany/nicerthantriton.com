@@ -1,6 +1,7 @@
 ---
 title: Something about Analemmas
 date-published: 2016-11-08
+uuid: ca85f7e9-4b7e-4aeb-9ba4-38d3b7649779
 tags:
  - Clojure
  - Analemma
