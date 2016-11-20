@@ -86,3 +86,9 @@
         (reload :asset-path "/public")
         (cljs)
         (p/print-meta)))
+
+(deftask deploy
+  []
+  (comp (build)
+        (p/inject-scripts :scripts #{"ga-inject.js"})
+        (cljs :optimizations :advanced)))
