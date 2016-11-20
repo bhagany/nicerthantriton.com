@@ -76,13 +76,13 @@
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
         (p/assortment :renderer 'nicerthantriton.core/topic :grouper tagify)
-        (p/atom-feed)
-        (cljs)))
+        (p/atom-feed)))
 
 (deftask dev
   []
   (comp (serve :resource-root "public/")
-        (reload :asset-path "/public")
         (watch)
         (build)
+        (reload :asset-path "/public")
+        (cljs)
         (p/print-meta)))
