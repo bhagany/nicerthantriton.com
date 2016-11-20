@@ -249,11 +249,15 @@ ul.social a:hover:before {
 }
 
 li.twitter {
-    background: url(/images/twitter.svg) left center no-repeat;
+    background: url('/images/twitter.svg') left center no-repeat;
 }
 
 li.github {
-    background: url(/images/github.svg) left center no-repeat;
+    background: url('/images/github.svg') left center no-repeat;
+}
+
+li.atom {
+    background: url('/images/atom.svg') left center no-repeat;
 }
 
 ul.social a {

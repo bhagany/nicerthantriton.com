@@ -30,6 +30,12 @@
   [topic]
   (str "topics/" (slugify topic) ".html"))
 
+(def social-ul
+  [:ul.social
+   [:li.twitter [:a {:href "https://twitter.com/bhagany"} "@bhagany"]]
+   [:li.github [:a {:href "https://github.com/bhagany"} "bhagany"]]
+   [:li.atom [:a {:href "/atom.xml"} "Updates"]]])
+
 (defn design [data content]
   (hp/html5
    [:html
@@ -62,9 +68,7 @@
         [:div.barb [:img {:src "/images/barb.svg"}]]]
        [:p "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."]
        [:div#sidebar-content
-        [:ul.social
-         [:li.twitter [:a {:href "https://twitter.com/bhagany"} "@bhagany"]]
-         [:li.github [:a {:href "https://github.com/bhagany"} "bhagany"]]]
+        social-ul
         [:div.topics
          [:h3 "Topics"]
          [:ul.topics
@@ -87,9 +91,7 @@
        [:a.logo {:href "/"}
         [:img {:src "/images/ntt-logo-outline.svg"}]
         [:h1 "Nicer than Triton"]]
-       [:ul.social
-        [:li.twitter [:a {:href "https://twitter.com/bhagany"} "@bhagany"]]
-        [:li.github [:a {:href "https://github.com/bhagany"} "bhagany"]]]]]]]))
+       social-ul]]]]))
 
 (defn page [data]
   (let [content [[:h2 {:class (str "title " (slugify (get tag-topics (-> data :entry :tags first))))}
