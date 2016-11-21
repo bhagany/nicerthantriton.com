@@ -14,11 +14,12 @@
    "geologically inactive"
    "decidedly eccentric"
    "probably will never be torn apart by tidal forces"
-   "rotating at my own pace"
+   "tidally unlocked"
    "definitely fluid interior"
-   "lower albedo"
+   "albedo < 0.76"
    "well within my star's habitable zone"
-   "surface temperature ideal for liquid water"])
+   "surface temperature ideal for liquid water"
+   "topologically toroidal"])
 
 (.addEventListener
  js/document
