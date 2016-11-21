@@ -155,8 +155,6 @@ div#flair {
 
 div#footer {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
 }
 
 div#sidebar h3 {
@@ -207,14 +205,25 @@ img.sidebar-logo, img.star {
     margin: 25px auto;
 }
 
+div#footer-content {
+    margin-top: 16px;
+    display: flex;
+}
+
 div#footer a.logo {
-    margin-top: 30px;
+    margin: auto 0 auto 32px;
     width: 32em;
     flex: 1;
 }
 
 div#footer a.logo img {
+    margin-top: 20px;
     margin-left: 24px;
+}
+
+div#footer ul.social {
+    width: 16em;
+    margin-top: 16px;
 }
 
 ul.social, ul.topics, ul.recent {
@@ -266,12 +275,6 @@ li.atom {
 ul.social a {
     margin: auto 0;
     padding-left: 40px;
-}
-
-div#footer ul.social {
-    width: 16em;
-    float: right;
-    margin-top: 35px;
 }
 
 p#nicer-reason {

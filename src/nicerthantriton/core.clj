@@ -89,10 +89,11 @@
        [:div.barb-hr.up.right
         [:div.hr]
         [:div.barb]]
-       [:a.logo {:href "/"}
-        [:img {:src "/images/ntt-logo-outline.svg" :width "78px" :height "70px"}]
-        [:h1 "Nicer than Triton"]]
-       social-ul]]]]))
+       [:div#footer-content
+        [:a.logo {:href "/"}
+         [:img {:src "/images/ntt-logo-outline.svg" :width "78px" :height "70px"}]
+         [:h1 "Nicer than Triton"]]
+        social-ul]]]]]))
 
 (defn page [data]
   (let [content [[:h2 {:class (str "title " (slugify (get tag-topics (-> data :entry :tags first))))}
