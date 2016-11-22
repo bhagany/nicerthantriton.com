@@ -34,7 +34,8 @@
   [:ul.social
    [:li.twitter [:a {:href "https://twitter.com/bhagany"} "@bhagany"]]
    [:li.github [:a {:href "https://github.com/bhagany"} "bhagany"]]
-   [:li.atom [:a {:href "/atom.xml"} "Updates"]]])
+   [:li.atom [:a {:href "/atom.xml"} "Subscribe"]]
+   [:li.email [:a {:href "/to-email"} "Updates"]]])
 
 (defn design [data content]
   (hp/html5

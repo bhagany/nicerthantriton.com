@@ -272,6 +272,10 @@ li.atom {
     background: url('/images/atom.svg') left center no-repeat;
 }
 
+li.email {
+    background: url('/images/email.svg') left center no-repeat;
+}
+
 ul.social a {
     margin: auto 0;
     padding-left: 40px;
