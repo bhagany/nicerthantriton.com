@@ -52,6 +52,7 @@
                       (filter #(= (:parent-path %) "posts/"))
                       (sort-by :date-published #(compare %2 %1))
                       (take (:num-posts options)))]
+      (perun/report-info "recent-posts" "Added %s posts to metadata" (count recent))
       (perun/set-global-meta fileset (assoc global-meta :recent-posts recent)))))
 
 (deftask topics
@@ -63,6 +64,7 @@
                       (map #(get ntt/tag-topics %))
                       set
                       (sort-by #(.indexOf ntt/topic-order %)))]
+      (perun/report-info "topics" "Added generated topics to metadata")
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (deftask build
