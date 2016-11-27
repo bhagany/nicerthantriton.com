@@ -44,6 +44,7 @@
   {:num-posts 5})
 
 (deftask recent-posts
+  "Adds the `n` most recent posts to global metadata as `:recent-posts`"
   [n num-posts NUMPOSTS int "The number of posts to store"]
   (with-pre-wrap fileset
     (let [options (merge +recent-posts-defaults+ *opts*)
@@ -56,6 +57,7 @@
       (perun/set-global-meta fileset (assoc global-meta :recent-posts recent)))))
 
 (deftask topics
+  "Generates topics from the tags on each post, and adds them to global metadata as `:topics`"
   []
   (with-pre-wrap fileset
     (let [global-meta (perun/get-global-meta fileset)
@@ -68,6 +70,7 @@
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (deftask build
+  "Build nicerthantriton.com"
   []
   (comp (p/global-metadata)
         (p/markdown)
@@ -81,6 +84,7 @@
         (p/atom-feed)))
 
 (deftask dev
+  "Build nicerthantriton.com dev environment with reloading"
   []
   (comp (serve :resource-root "public/")
         (watch)
@@ -90,6 +94,7 @@
         (p/print-meta)))
 
 (deftask deploy
+  "Build nicerthantriton.com to production s3 bucket"
   []
   (comp (build)
         (p/inject-scripts :scripts #{"ga-inject.js"})
