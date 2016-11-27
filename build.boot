@@ -66,7 +66,7 @@
                       (map #(get ntt/tag-topics %))
                       set
                       (sort-by #(.indexOf ntt/topic-order %)))]
-      (perun/report-info "topics" "Added generated topics to metadata")
+      (perun/report-info "topics" "Added %s generated topics to metadata" (count topics))
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (deftask build
