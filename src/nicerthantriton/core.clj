@@ -67,7 +67,7 @@
        [:div.barb-hr.up.right
         [:div.hr]
         [:div.barb]]
-       [:p "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."]
+       [:p "I'm Brent Hagany, CTO of Goodsie. My free time is spent learning things or tinkering with some side project or another. Nicer than Triton is my outlet for going into more detail than strictly necessary (or maybe desirable) on the subjects of programming, astronomy, math, photography, or whatever grabs my attention next. If that sounds entertaining, stay in touch in some of the ways below."]
        [:div#sidebar-content
         social-ul
         [:div.topics
