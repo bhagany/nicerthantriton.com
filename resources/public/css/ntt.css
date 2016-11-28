@@ -130,6 +130,15 @@ div#sidebar {
     margin-top: 20px;
 }
 
+div#bio {
+    margin-top: 40px;
+}
+
+div#bio img {
+    width: 150px;
+    height: 150px;
+}
+
 div#sidebar p {
     margin-top: 40px;
 }
@@ -346,6 +355,16 @@ a.topic6, h2.topic6:before {
 @media (max-width: 1076px) {
     div#sidebar {
         width: 100%;
+    }
+
+    div#bio {
+        display: flex;
+        margin-bottom: 40px;
+    }
+
+    div#bio p {
+        margin-top: 0px;
+        margin-left: 40px;
     }
 
     div#sidebar-content {
