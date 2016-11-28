@@ -52,6 +52,7 @@
      [:meta {:name "apple-mobile-web-app-title" :content "Nicer than Triton"}]
      [:meta {:name "application-name" :content="Nicer than Triton"}]
      [:meta {:name "theme-color" :content "#ffffff"}]
+     [:title (str (-> data :entry :title) " | Nicer than Triton")]
      [:script {:src "/js/main.js" :type "text/javascript"}]]
     [:body
      [:div#wrapper
