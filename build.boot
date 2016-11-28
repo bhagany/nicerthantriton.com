@@ -81,7 +81,7 @@
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
         (p/assortment :renderer 'nicerthantriton.core/topic :grouper tagify)
-        (p/atom-feed)))
+        (p/atom-feed :filterer #(= (:parent-path %) "posts/"))))
 
 (deftask dev
   "Build nicerthantriton.com dev environment with reloading"
