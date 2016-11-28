@@ -19,7 +19,8 @@
    "albedo < 0.76"
    "well within my star's habitable zone"
    "surface temperature ideal for liquid water"
-   "topologically toroidal"])
+   "topologically toroidal"
+   "no monarchical pretensions"])
 
 (.addEventListener
  js/document
