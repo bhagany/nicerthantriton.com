@@ -1,22 +1,4 @@
 ---
-title: Something about Analemmas
-date-published: 2016-11-08
-uuid: ca85f7e9-4b7e-4aeb-9ba4-38d3b7649779
-tags:
- - Clojure
- - Analemma
+title: Potential Blog Alert
 ---
-Super insightful placeholder text fills you with wonder and stretches your imagination.
-You _never_ ___never___ thought such bliss was possible. Synapses fire at an exponentially increasing rate.
-The entire [universe](http://google.com?q=universe) submits itself to your gaze as the _concerned looks_ on your loved ones'
-__faces__ fade to `black`.
-
-```
-Maybe this is code? eh?
-```
-
-> howdy mr blockquote
-
-- Well,
-- If it isn't
-- An unordered list
+In some timelines, a series of blog posts begins right here in the near future. They are entertaining, cover a variety of topics, and go more in-depth than you knew you wanted. Rest assured, Nicer than Triton's crack team of blog conjurers is hard at work to ensure that this is one of those timelines. If you'd like to be informed if/when the appropriate wave functions collapse, subscribe, follow, etc using the links below.
