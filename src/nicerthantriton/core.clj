@@ -97,18 +97,20 @@
         social-ul]]]]]))
 
 (defn page [data]
-  (let [content [[:h2 {:class (str "title " (slugify (get tag-topics (-> data :entry :tags first))))}
+  (let [tags (-> data :entry :tags)
+        main-topic (or (get tag-topics (first tags)) "General")
+        content [[:h2 {:class (str "title " (slugify main-topic))}
                   (-> data :entry :title)]
                  (-> data :entry :content)
                  [:img.star {:src "/images/star.svg" :width "32px" :height "32px"}]
-                 (if-let [date-published (-> data :entry :date-published)]
+                 (when-let [date-published (-> data :entry :date-published)]
                    (let [df (java.text.SimpleDateFormat. "d MMMM yyyy")]
                      (.setTimeZone df (java.util.TimeZone/getTimeZone "UTC"))
                      [:p.posted (.format df date-published)]))
                  [:p.tags
                   (map #(let [topic (get tag-topics %)]
                           [:a {:href (str "/" (topic-href topic)) :class (str (slugify topic) " tag")} %])
-                       (-> data :entry :tags))]]]
+                       tags)]]]
    (design data content)))
 
 (defn topic
