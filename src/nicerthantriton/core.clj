@@ -70,16 +70,18 @@
        [:p "I'm Brent Hagany, CTO of Goodsie. My free time is spent learning things or tinkering with some side project or another. Nicer than Triton is my outlet for going into more detail than strictly necessary (or maybe desirable) on the subjects of programming, astronomy, math, photography, or whatever grabs my attention next. If that sounds entertaining, stay in touch in some of the ways below."]
        [:div#sidebar-content
         social-ul
-        [:div.topics
-         [:h3 "Topics"]
-         [:ul.topics
-          (map #(-> [:li [:a.topic {:class (slugify %) :href (str "/" (topic-href %))} %]])
-               (-> data :meta :topics))]]
-        [:div.recent
-         [:h3 "Recent Posts"]
-         [:ul.recent
-          (map #(-> [:li [:a {:href (:permalink %)} (:title %)]])
-               (-> data :meta :recent-posts))]]
+        (when-let [topics (-> data :meta :topics seq)]
+          [:div.topics
+           [:h3 "Topics"]
+           [:ul.topics
+            (map #(-> [:li [:a.topic {:class (slugify %) :href (str "/" (topic-href %))} %]])
+                 topics)]])
+        (when-let [posts (-> data :meta :recent-posts seq)]
+          [:div.recent
+           [:h3 "Recent Posts"]
+           [:ul.recent
+            (map #(-> [:li [:a {:href (:permalink %)} (:title %)]])
+                 posts)]])
         [:div.barb-hr.down.right
          [:div.hr]
          [:div.barb]]
