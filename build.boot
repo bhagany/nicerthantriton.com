@@ -6,11 +6,14 @@
                  [adzerk/boot-cljs "1.7.228-2" :scope "test"]
                  [adzerk/boot-reload "0.4.12" :scope "test"]
                  [hiccup "1.0.5"]
+                 [hashobject/boot-s3 "0.1.2-SNAPSHOT"]
                  [perun "0.4.0-SNAPSHOT" :scope "test"]])
 
-(require '[adzerk.boot-cljs :refer [cljs]]
+(require '[boot.core :as boot]
+         '[adzerk.boot-cljs :refer [cljs]]
          '[pandeiro.boot-http :refer [serve]]
          '[adzerk.boot-reload :refer [reload]]
+         '[hashobject.boot-s3 :refer [s3-sync]]
          '[clojure.string :as str]
          '[io.perun :as p]
          '[io.perun.core :as perun]
@@ -91,11 +94,19 @@
         (build)
         (reload :asset-path "/public")
         (cljs)
-        (p/print-meta)))
+        #_(p/print-meta)))
+
+(def aws-edn
+  (read-string (slurp "aws.edn")))
 
 (deftask deploy
-  "Build nicerthantriton.com to production s3 bucket"
+  "Build nicerthantriton.com and deploy to production s3 bucket"
   []
   (comp (build)
         (p/inject-scripts :scripts #{"ga-inject.js"})
-        (cljs :optimizations :advanced)))
+        (cljs :optimizations :advanced)
+        (s3-sync :bucket "nicerthantriton.com"
+                 :source "public"
+                 :access-key (:access-key aws-edn)
+                 :secret-key (:secret-key aws-edn)
+                 :options {"Cache-Control" "max-age=315360000, no-transform, public"})))
