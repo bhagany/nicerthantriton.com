@@ -2,11 +2,12 @@
  :source-paths #{"src" "content"}
  :resource-paths #{"resources"}
  :dependencies '[[boot/core "2.6.0" :scope "provided"]
-                 [pandeiro/boot-http "0.7.0"]
+                 [org.clojure/tools.nrepl "0.2.12"]
+                 [pandeiro/boot-http "0.7.6" :exclusions [org.clojure/clojure]]
                  [adzerk/boot-cljs "1.7.228-2" :scope "test"]
-                 [adzerk/boot-reload "0.4.12" :scope "test"]
-                 [hiccup "1.0.5"]
-                 [hashobject/boot-s3 "0.1.2-SNAPSHOT"]
+                 [adzerk/boot-reload "0.4.13" :scope "test"]
+                 [hiccup "1.0.5" :exclusions [org.clojure/clojure]]
+                 [hashobject/boot-s3 "0.1.2-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [perun "0.4.0-SNAPSHOT" :scope "test"]])
 
 (require '[boot.core :as boot]
