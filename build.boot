@@ -106,6 +106,33 @@
         (perun/report-info "minify-css" "Minified %s css file(s)" (count css-files))
         (-> fileset (boot/add-resource out) boot/commit!)))))
 
+(def content-types
+  {"html" "text/html; charset=utf-8"
+   "css" "text/css; charset=utf-8"
+   "js" "application/javascript; charset=utf-8"
+   "svg" "image/svg+xml; charset=utf-8"
+   "xml" "application/xml; charset=utf-8"
+   "json" "application/json; charset=utf-8"})
+
+(deftask s3-metadata
+  []
+  (boot/with-pre-wrap fileset
+    (let [output (boot/output-files fileset)
+          s3-meta (->> ["html" "css" "js" "svg" "xml" "json"]
+                       (map #(->
+                              [% (map :path
+                                      (boot/by-re
+                                       [(re-pattern (str "^public/.*\\." %))]
+                                       output))]))
+                       (mapcat (fn [[type files]]
+                                 (map #(-> [% {:hashobject/boot-s3
+                                               {:metadata
+                                                {:content-type
+                                                 (get content-types type)}}}])
+                                      files)))
+                       (into {}))]
+      (boot/add-meta fileset s3-meta))))
+
 (deftask build
   "Build nicerthantriton.com"
   [t tier TIER kw "The tier we're building for"]
@@ -141,8 +168,9 @@
         (minify-css)
         (p/inject-scripts :scripts #{"ga-inject.js"})
         (cljs :optimizations :advanced)
+        (s3-metadata)
         (s3-sync :bucket "nicerthantriton.com"
                  :source "public"
                  :access-key (:access-key aws-edn)
                  :secret-key (:secret-key aws-edn)
-                 :options {"Cache-Control" "max-age=315360000, no-transform, public"})))
+                 :options {:metadata {:cache-control "max-age=315360000, no-transform, public"}})))
