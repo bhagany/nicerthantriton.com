@@ -11,10 +11,12 @@
                  [perun "0.4.0-SNAPSHOT" :scope "test"]])
 
 (require '[boot.core :as boot]
+         '[boot.pod :as pod]
          '[adzerk.boot-cljs :refer [cljs]]
          '[pandeiro.boot-http :refer [serve]]
          '[adzerk.boot-reload :refer [reload]]
          '[hashobject.boot-s3 :refer [s3-sync]]
+         '[clojure.java.io :as io]
          '[clojure.string :as str]
          '[io.perun :as p]
          '[io.perun.core :as perun]
@@ -73,6 +75,30 @@
       (perun/report-info "topics" "Added %s generated topics to metadata" (count topics))
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
+(def minify-css-deps '[[asset-minifier "0.2.0"]])
+
+(deftask minify-css
+  []
+  (let [out (boot/tmp-dir!)
+        prev (atom nil)
+        pod (-> (boot/get-env)
+                (update-in [:dependencies] into minify-css-deps)
+                pod/make-pod
+                future)]
+    (boot/with-pre-wrap fileset
+      (let [files (->> fileset
+                       (boot/fileset-diff @prev)
+                       boot/output-files)
+            css-files (boot/by-ext [".css"] files)]
+        (doseq [file css-files
+                :let [new-file (io/file out (boot/tmp-path file))]]
+          (io/make-parents new-file)
+          (pod/with-call-in @pod
+            (asset-minifier.core/minify-css ~(.getPath (boot/tmp-file file))
+                                            ~(.getPath new-file))))
+        (perun/report-info "minify-css" "Minified %s css file(s)" (count css-files))
+        (-> fileset (boot/add-resource out) boot/commit!)))))
+
 (deftask build
   "Build nicerthantriton.com"
   []
@@ -104,6 +130,7 @@
   "Build nicerthantriton.com and deploy to production s3 bucket"
   []
   (comp (build)
+        (minify-css)
         (p/inject-scripts :scripts #{"ga-inject.js"})
         (cljs :optimizations :advanced)
         (s3-sync :bucket "nicerthantriton.com"
