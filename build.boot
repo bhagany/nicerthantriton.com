@@ -75,6 +75,13 @@
       (perun/report-info "topics" "added %s generated topics to metadata" (count topics))
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
+(deftask set-tier
+  [v val VAL kw "The value to set for :tier"]
+  (with-pre-wrap fileset
+    (let [global-meta (perun/get-global-meta fileset)]
+      (perun/report-info "tier" "set :tier to %s" val)
+      (perun/set-global-meta fileset (assoc global-meta :tier val)))))
+
 (def minify-css-deps '[[asset-minifier "0.2.0"]])
 
 (deftask minify-css
@@ -101,8 +108,9 @@
 
 (deftask build
   "Build nicerthantriton.com"
-  []
+  [t tier TIER kw "The tier we're building for"]
   (comp (p/global-metadata)
+        (set-tier :val tier)
         (p/markdown)
         (p/slug :slug-fn slugify-filename)
         (p/permalink :permalink-fn permalinkify)
@@ -118,7 +126,7 @@
   []
   (comp (serve :resource-root "public/")
         (watch)
-        (build)
+        (build :tier :dev)
         (reload :asset-path "/public")
         (cljs)
         #_(p/print-meta)))
@@ -129,7 +137,7 @@
 (deftask deploy
   "Build nicerthantriton.com and deploy to production s3 bucket"
   []
-  (comp (build)
+  (comp (build :tier :prod)
         (minify-css)
         (p/inject-scripts :scripts #{"ga-inject.js"})
         (cljs :optimizations :advanced)
