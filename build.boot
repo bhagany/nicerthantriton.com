@@ -59,7 +59,7 @@
                       (filter #(= (:parent-path %) "posts/"))
                       (sort-by :date-published #(compare %2 %1))
                       (take (:num-posts options)))]
-      (perun/report-info "recent-posts" "Added %s posts to metadata" (count recent))
+      (perun/report-info "recent-posts" "added %s posts to metadata" (count recent))
       (perun/set-global-meta fileset (assoc global-meta :recent-posts recent)))))
 
 (deftask topics
@@ -72,7 +72,7 @@
                       (map #(get ntt/tag-topics %))
                       set
                       (sort-by #(.indexOf ntt/topic-order %)))]
-      (perun/report-info "topics" "Added %s generated topics to metadata" (count topics))
+      (perun/report-info "topics" "added %s generated topics to metadata" (count topics))
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (def minify-css-deps '[[asset-minifier "0.2.0"]])
