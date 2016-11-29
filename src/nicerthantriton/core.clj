@@ -37,7 +37,7 @@
    [:li.atom [:a {:href "/atom.xml"} "Subscribe"]]
    [:li.email [:a {:href "http://eepurl.com/cqwJNP"} "Updates"]]])
 
-(defn design [data content]
+(defn design [data title content]
   (hp/html5
    [:html
     [:head
@@ -52,8 +52,8 @@
      [:meta {:name "apple-mobile-web-app-title" :content "Nicer than Triton"}]
      [:meta {:name "application-name" :content="Nicer than Triton"}]
      [:meta {:name "theme-color" :content "#ffffff"}]
-     [:title (str (-> data :entry :title) " | Nicer than Triton")]
-     [:script {:src "/js/main.js" :type "text/javascript"}]]
+     [:title title]
+     [:script {:defer (= :prod (-> data :meta :tier)) :src "/js/main.js" :type "text/javascript"}]]
     [:body
      [:div#wrapper
       [:div#header
@@ -104,6 +104,7 @@
 (defn page [data]
   (let [tags (-> data :entry :tags)
         main-topic (or (get tag-topics (first tags)) "General")
+        title (str (-> data :entry :title) " | Nicer than Triton")
         content [[:h2 {:class (str "title " (slugify main-topic))}
                   (-> data :entry :title)]
                  (-> data :entry :content)
@@ -116,13 +117,14 @@
                   (map #(let [topic (get tag-topics %)]
                           [:a {:href (str "/" (topic-href topic)) :class (str (slugify topic) " tag")} %])
                        tags)]]]
-   (design data content)))
+   (design data title content)))
 
 (defn topic
   [data]
   (let [topic (-> data :entry :topic)
+        title (str topic " | Nicer than Triton")
         content [[:h2 {:class (str "title " (slugify topic))} topic]
                  [:ul
                   (map #(-> [:li [:a {:href (:permalink %)} (:title %)]])
                        (-> data :entries))]]]
-    (design data content)))
+    (design data title content)))
