@@ -173,5 +173,4 @@
                  :source "public"
                  :access-key (:access-key aws-edn)
                  :secret-key (:secret-key aws-edn)
-                 :options {:metadata {:cache-control "max-age=315360000, no-transform, public"}
-                           :permissions [[:all-users :read]]})))
+                 :metadata {:cache-control "max-age=315360000, no-transform, public"})))
