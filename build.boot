@@ -168,6 +168,7 @@
         (minify-css)
         (p/inject-scripts :scripts #{"ga-inject.js"})
         (cljs :optimizations :advanced)
+        (sift :include [#"\.cljs\.edn$"] :invert true)
         (s3-metadata)
         (s3-sync :bucket "nicerthantriton.com"
                  :source "public"
