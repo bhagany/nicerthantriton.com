@@ -43,7 +43,7 @@
                        path (ntt/topic-href topic)]
                    (-> result
                        (update-in [path :entries] conj entry)
-                       (assoc-in [path :group-meta] {:topic topic}))))
+                       (assoc-in [path :group-meta] {:title topic :main-topic topic}))))
                {})))
 
 (def +recent-posts-defaults+
@@ -139,13 +139,14 @@
   (comp (p/global-metadata)
         (set-tier :val tier)
         (p/markdown)
+        (p/assortment :renderer 'nicerthantriton.core/topic
+                      :grouper tagify)
         (p/slug :slug-fn slugify-filename)
         (p/permalink :permalink-fn permalinkify)
         (p/canonical-url)
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
-        (p/assortment :renderer 'nicerthantriton.core/topic :grouper tagify)
         (p/atom-feed :filterer #(= (:parent-path %) "posts/"))))
 
 (deftask dev
