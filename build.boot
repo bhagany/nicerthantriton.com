@@ -46,6 +46,11 @@
                        (assoc-in [path :group-meta] {:title topic :main-topic topic}))))
                {})))
 
+(defn post?
+  [{:keys [has-content parent-path]}]
+  (and has-content
+       (= parent-path "posts/")))
+
 (def +recent-posts-defaults+
   {:num-posts 5})
 
@@ -56,7 +61,7 @@
     (let [options (merge +recent-posts-defaults+ *opts*)
           global-meta (perun/get-global-meta fileset)
           recent (->> (perun/get-meta fileset)
-                      (filter #(= (:parent-path %) "posts/"))
+                      (filter post?)
                       (sort-by :date-published #(compare %2 %1))
                       (take (:num-posts options)))]
       (perun/report-info "recent-posts" "added %s posts to metadata" (count recent))
@@ -147,7 +152,7 @@
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
-        (p/atom-feed :filterer #(= (:parent-path %) "posts/"))))
+        (p/atom-feed)))
 
 (deftask dev
   "Build nicerthantriton.com dev environment with reloading"
