@@ -48,8 +48,7 @@
 
 (defn post?
   [{:keys [has-content parent-path]}]
-  (and has-content
-       (= parent-path "posts/")))
+  (and has-content (= parent-path "posts/")))
 
 (def +recent-posts-defaults+
   {:num-posts 5})
@@ -152,7 +151,7 @@
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/page)
-        (p/atom-feed)))
+        (p/atom-feed :filterer post?)))
 
 (deftask dev
   "Build nicerthantriton.com dev environment with reloading"
