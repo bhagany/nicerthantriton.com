@@ -80,6 +80,7 @@
       (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (deftask set-tier
+  "Sets the `:tier` key in perun's global metadata, for render fn's to dispatch on"
   [v val VAL kw "The value to set for :tier"]
   (with-pre-wrap fileset
     (let [global-meta (perun/get-global-meta fileset)]
@@ -89,6 +90,7 @@
 (def minify-css-deps '[[asset-minifier "0.2.0"]])
 
 (deftask minify-css
+  "Would you believe that this task finds CSS files, and minifies them?"
   []
   (let [out (boot/tmp-dir!)
         prev (atom nil)
@@ -97,17 +99,16 @@
                 pod/make-pod
                 future)]
     (boot/with-pre-wrap fileset
-      (let [files (->> fileset
-                       (boot/fileset-diff @prev)
-                       boot/output-files)
-            css-files (boot/by-ext [".css"] files)]
-        (doseq [file css-files
+      (let [files (->> (boot/fileset-diff @prev fileset :hash)
+                       boot/output-files
+                       (boot/by-ext [".css"]))]
+        (doseq [file files
                 :let [new-file (io/file out (boot/tmp-path file))]]
           (io/make-parents new-file)
           (pod/with-call-in @pod
             (asset-minifier.core/minify-css ~(.getPath (boot/tmp-file file))
                                             ~(.getPath new-file))))
-        (perun/report-info "minify-css" "Minified %s css file(s)" (count css-files))
+        (perun/report-info "minify-css" "Minified %s css file(s)" (count files))
         (-> fileset (boot/add-resource out) boot/commit!)))))
 
 (def content-types
@@ -119,6 +120,7 @@
    "json" "application/json; charset=utf-8"})
 
 (deftask s3-metadata
+  "Adds boot-s3-compatible metadata for setting headers on files destined for s3"
   []
   (boot/with-pre-wrap fileset
     (let [output (boot/output-files fileset)
