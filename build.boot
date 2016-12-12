@@ -20,6 +20,7 @@
          '[clojure.string :as str]
          '[io.perun :as p]
          '[io.perun.core :as perun]
+         '[io.perun.meta :as pm]
          '[nicerthantriton.core :as ntt])
 
 (defn slugify-filename
@@ -58,34 +59,34 @@
   [n num-posts NUMPOSTS int "The number of posts to store"]
   (with-pre-wrap fileset
     (let [options (merge +recent-posts-defaults+ *opts*)
-          global-meta (perun/get-global-meta fileset)
-          recent (->> (perun/get-meta fileset)
+          global-meta (pm/get-global-meta fileset)
+          recent (->> (pm/get-meta fileset)
                       (filter post?)
                       (sort-by :date-published #(compare %2 %1))
                       (take (:num-posts options)))]
       (perun/report-info "recent-posts" "added %s posts to metadata" (count recent))
-      (perun/set-global-meta fileset (assoc global-meta :recent-posts recent)))))
+      (pm/set-global-meta fileset (assoc global-meta :recent-posts recent)))))
 
 (deftask topics
   "Generates topics from the tags on each post, and adds them to global metadata as `:topics`"
   []
   (with-pre-wrap fileset
-    (let [global-meta (perun/get-global-meta fileset)
-          topics (->> (perun/get-meta fileset)
+    (let [global-meta (pm/get-global-meta fileset)
+          topics (->> (pm/get-meta fileset)
                       (mapcat :tags)
                       (map #(get ntt/tag-topics %))
                       set
                       (sort-by #(.indexOf ntt/topic-order %)))]
       (perun/report-info "topics" "added %s generated topics to metadata" (count topics))
-      (perun/set-global-meta fileset (assoc global-meta :topics topics)))))
+      (pm/set-global-meta fileset (assoc global-meta :topics topics)))))
 
 (deftask set-tier
   "Sets the `:tier` key in perun's global metadata, for render fn's to dispatch on"
   [v val VAL kw "The value to set for :tier"]
   (with-pre-wrap fileset
-    (let [global-meta (perun/get-global-meta fileset)]
+    (let [global-meta (pm/get-global-meta fileset)]
       (perun/report-info "tier" "set :tier to %s" val)
-      (perun/set-global-meta fileset (assoc global-meta :tier val)))))
+      (pm/set-global-meta fileset (assoc global-meta :tier val)))))
 
 (def minify-css-deps '[[asset-minifier "0.2.0"]])
 
