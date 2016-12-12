@@ -59,7 +59,7 @@
       [:div#header
        [:a.logo {:href "/"}
         [:img {:src "/images/ntt-logo.svg" :width "108px" :height "108px"}]
-        [:h1 "Nicer than Triton"]]
+        [:h1 "Nicer than Triton" (if (= :dev (-> data :meta :tier)) " - Dev!")]]
        [:div.barb-hr.down.left
         [:div.barb]
         [:div.hr]]]
