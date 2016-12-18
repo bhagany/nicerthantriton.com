@@ -30,6 +30,36 @@
   [topic]
   (str "topics/" (slugify topic) ".html"))
 
+(defn post [data]
+  (let [{:keys [tags main-topic title content permalink date-published]} (:entry data)
+        main-topic (or main-topic
+                       (get tag-topics (first tags))
+                       "General")]
+    (hp/html5
+     [:h2 {:class (str "title " (slugify main-topic))}
+      [:a {:href permalink} title]]
+     content
+     [:img.star {:src "/images/star.svg" :width "32px" :height "32px"}]
+     (when date-published
+       (let [df (java.text.SimpleDateFormat. "d MMMM yyyy")]
+         (.setTimeZone df (java.util.TimeZone/getTimeZone "UTC"))
+         [:p.posted (.format df date-published)]))
+     [:p.tags
+      (map #(let [topic (get tag-topics %)]
+              [:a {:href (str "/" (topic-href topic)) :class (str (slugify topic) " tag")} %])
+           tags)])))
+
+(defn index [data]
+  (post (assoc data :entry (-> data :entries first))))
+
+(defn topic
+  [{{title :title} :entry
+    entries :entries}]
+  (hp/html5
+   [:h2 {:class (str "title " (slugify title))} title]
+   [:ul
+    (map #(-> [:li [:a {:href (:permalink %)} (:title %)]]) entries)]))
+
 (def social-ul
   [:ul.social
    [:li.twitter [:a {:href "https://twitter.com/bhagany"} "@bhagany"]]
@@ -37,7 +67,8 @@
    [:li.atom [:a {:href "/atom.xml"} "Subscribe"]]
    [:li.email [:a {:href "http://eepurl.com/cqwJNP"} "Updates"]]])
 
-(defn design [data content]
+(defn page [{{:keys [title content]} :entry
+             {:keys [tier topics recent-posts]} :meta}]
   (hp/html5
    [:html
     [:head
@@ -49,17 +80,18 @@
      [:link {:href "https://fonts.googleapis.com/css?family=Della+Respira|Open+Sans:400,400i,700,700i"
              :rel "stylesheet"}]
      [:link {:href "/css/ntt.css" :rel "stylesheet"}]
+     [:link {:href "/atom.xml" :type "application/atom+xml" :rel "alternate" :title "Nicer than Triton Feed"}]
      [:meta {:name "apple-mobile-web-app-title" :content "Nicer than Triton"}]
      [:meta {:name "application-name" :content="Nicer than Triton"}]
      [:meta {:name "theme-color" :content "#ffffff"}]
-     [:title (str (-> data :entry :title) " | Nicer than Triton")]
-     [:script {:defer (= :prod (-> data :meta :tier)) :src "/js/main.js" :type "text/javascript"}]]
+     [:title (str title " | Nicer than Triton")]
+     [:script {:defer (= tier :prod) :src "/js/main.js" :type "text/javascript"}]]
     [:body
      [:div#wrapper
       [:div#header
        [:a.logo {:href "/"}
         [:img {:src "/images/ntt-logo.svg" :width "108px" :height "108px"}]
-        [:h1 "Nicer than Triton" (if (= :dev (-> data :meta :tier)) " - Dev!")]]
+        [:h1 "Nicer than Triton" (when (= tier :dev) " - Dev!")]]
        [:div.barb-hr.down.left
         [:div.barb]
         [:div.hr]]]
@@ -70,21 +102,27 @@
         [:div.barb]]
        [:div#bio
         [:img {:src "/images/nicer-guy.jpg" :width "150px" :height "150px"}]
-        [:p "I'm Brent Hagany, CTO of Goodsie. My free time is spent learning things or tinkering with some side project or another. Nicer than Triton is my outlet for going into more detail than strictly necessary (or maybe desirable) on the subjects of programming, astronomy, math, photography, or whatever grabs my attention next. If that sounds entertaining, stay in touch in some of the ways below."]]
+        [:p (str "I'm Brent Hagany, CTO of Goodsie. My free time is spent "
+                 "learning things or tinkering with some side project or "
+                 "another. Nicer than Triton is my outlet for going into more "
+                 "detail than strictly necessary (or maybe desirable) on the "
+                 "subjects of programming, astronomy, math, photography, or "
+                 "whatever grabs my attention next. If that sounds "
+                 "entertaining, stay in touch in some of the ways below.")]]
        [:div#sidebar-content
         social-ul
-        (when-let [topics (-> data :meta :topics seq)]
+        (when (seq topics)
           [:div.topics
            [:h3 "Topics"]
            [:ul.topics
             (map #(-> [:li [:a.topic {:class (slugify %) :href (str "/" (topic-href %))} %]])
                  topics)]])
-        (when-let [posts (-> data :meta :recent-posts seq)]
+        (when (seq recent-posts)
           [:div.recent
            [:h3 "Recent Posts"]
            [:ul.recent
             (map #(-> [:li [:a {:href (:permalink %)} (:title %)]])
-                 posts)]])
+                 recent-posts)]])
         [:div.barb-hr.down.right
          [:div.hr]
          [:div.barb]]
@@ -100,29 +138,3 @@
          [:img {:src "/images/ntt-logo-outline.svg" :width "78px" :height "70px"}]
          [:h1 "Nicer than Triton"]]
         social-ul]]]]]))
-
-(defn page [data]
-  (let [tags (-> data :entry :tags)
-        main-topic (or (get tag-topics (first tags))
-                       (-> data :entry :main-topic)
-                       "General")
-        content [[:h2 {:class (str "title " (slugify main-topic))}
-                  (-> data :entry :title)]
-                 (-> data :entry :content)
-                 [:img.star {:src "/images/star.svg" :width "32px" :height "32px"}]
-                 (when-let [date-published (-> data :entry :date-published)]
-                   (let [df (java.text.SimpleDateFormat. "d MMMM yyyy")]
-                     (.setTimeZone df (java.util.TimeZone/getTimeZone "UTC"))
-                     [:p.posted (.format df date-published)]))
-                 [:p.tags
-                  (map #(let [topic (get tag-topics %)]
-                          [:a {:href (str "/" (topic-href topic)) :class (str (slugify topic) " tag")} %])
-                       tags)]]]
-   (design data content)))
-
-(defn topic
-  [data]
-  (hp/html5
-   [:ul
-    (map #(-> [:li [:a {:href (:permalink %)} (:title %)]])
-         (-> data :entries))]))

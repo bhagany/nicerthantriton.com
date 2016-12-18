@@ -44,7 +44,7 @@
                        path (ntt/topic-href topic)]
                    (-> result
                        (update-in [path :entries] conj entry)
-                       (assoc-in [path :group-meta] {:title topic :main-topic topic}))))
+                       (assoc-in [path :group-meta :title] topic))))
                {})))
 
 (defn post?
@@ -140,21 +140,36 @@
                        (into {}))]
       (boot/add-meta fileset s3-meta))))
 
+(deftask urls
+  "Helper task for encapsulating all url generation stuff"
+  [_ filterer FILTERER code "predicate to use for selecting entries (default: `:has-content`)"]
+  (let [filterer (or filterer :has-content)]
+    (comp (p/slug :slug-fn slugify-filename :filterer filterer)
+          (p/permalink :permalink-fn permalinkify :filterer filterer)
+          (p/canonical-url :filterer filterer))))
+
 (deftask build
   "Build nicerthantriton.com"
   [t tier TIER kw "The tier we're building for"]
   (comp (p/global-metadata)
         (set-tier :val tier)
         (p/markdown)
+        (urls)
+        (p/collection :renderer 'nicerthantriton.core/index
+                      :filterer post?
+                      :meta {:derived true})
         (p/assortment :renderer 'nicerthantriton.core/topic
-                      :grouper tagify)
-        (p/slug :slug-fn slugify-filename)
-        (p/permalink :permalink-fn permalinkify)
-        (p/canonical-url)
+                      :filterer post?
+                      :grouper tagify
+                      :meta {:derived true})
+        (urls :filterer :derived)
         (recent-posts)
         (topics)
+        (p/render :renderer 'nicerthantriton.core/post
+                  :filterer post?)
         (p/render :renderer 'nicerthantriton.core/page)
-        (p/atom-feed :filterer post?)))
+        (p/atom-feed :filterer post?)
+        #_(p/print-meta)))
 
 (deftask dev
   "Build nicerthantriton.com dev environment with reloading"
