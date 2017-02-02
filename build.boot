@@ -1,14 +1,14 @@
 (set-env!
  :source-paths #{"src" "content"}
  :resource-paths #{"resources"}
- :dependencies '[[boot/core "2.6.0" :scope "provided"]
+ :dependencies '[[boot/core "2.7.1" :scope "provided"]
                  [org.clojure/tools.nrepl "0.2.12"]
                  [pandeiro/boot-http "0.7.6" :exclusions [org.clojure/clojure]]
                  [adzerk/boot-cljs "1.7.228-2" :scope "test"]
                  [adzerk/boot-reload "0.4.13" :scope "test"]
-                 [hiccup "1.0.5" :exclusions [org.clojure/clojure]]
                  [hashobject/boot-s3 "0.1.2-SNAPSHOT" :exclusions [org.clojure/clojure]]
-                 [perun "0.4.0-SNAPSHOT" :scope "test"]])
+                 [hiccup "1.0.5" :exclusions [org.clojure/clojure]]
+                 [perun "0.4.1-SNAPSHOT" :scope "test"]])
 
 (require '[boot.core :as boot]
          '[boot.pod :as pod]
@@ -23,17 +23,6 @@
          '[io.perun.meta :as pm]
          '[nicerthantriton.core :as ntt])
 
-(defn slugify-filename
-  [filename]
-  (->> (str/split filename #"[-\.\s]")
-       drop-last
-       (str/join "-")
-       str/lower-case))
-
-(defn permalinkify
-  [{:keys [slug parent-path]}]
-  (str "/" parent-path slug ".html"))
-
 (defn tagify
   [entries]
   (->> entries
@@ -44,12 +33,12 @@
                        path (ntt/topic-href topic)]
                    (-> result
                        (update-in [path :entries] conj entry)
-                       (assoc-in [path :group-meta :title] topic))))
+                       (assoc-in [path :entry :title] topic))))
                {})))
 
 (defn post?
-  [{:keys [has-content parent-path]}]
-  (and has-content (= parent-path "posts/")))
+  [{:keys [path]}]
+  (.startsWith path "public/posts/"))
 
 (def +recent-posts-defaults+
   {:num-posts 5})
@@ -101,7 +90,7 @@
                 future)]
     (boot/with-pre-wrap fileset
       (let [files (->> (boot/fileset-diff @prev fileset :hash)
-                       boot/output-files
+                       boot/ls
                        (boot/by-ext [".css"]))]
         (doseq [file files
                 :let [new-file (io/file out (boot/tmp-path file))]]
@@ -125,7 +114,7 @@
   []
   (boot/with-pre-wrap fileset
     (let [output (boot/output-files fileset)
-          s3-meta (->> ["html" "css" "js" "svg" "xml" "json"]
+          s3-meta (->> (keys content-types)
                        (map #(->
                               [% (map :path
                                       (boot/by-re
@@ -140,36 +129,25 @@
                        (into {}))]
       (boot/add-meta fileset s3-meta))))
 
-(deftask urls
-  "Helper task for encapsulating all url generation stuff"
-  [_ filterer FILTERER code "predicate to use for selecting entries (default: `:has-content`)"]
-  (let [filterer (or filterer :has-content)]
-    (comp (p/slug :slug-fn slugify-filename :filterer filterer)
-          (p/permalink :permalink-fn permalinkify :filterer filterer)
-          (p/canonical-url :filterer filterer))))
-
 (deftask build
   "Build nicerthantriton.com"
   [t tier TIER kw "The tier we're building for"]
   (comp (p/global-metadata)
         (set-tier :val tier)
-        (p/markdown)
-        (urls)
+        (p/markdown :options {:extensions {:smarts true}})
+        (p/atom-feed :filterer post?)
         (p/collection :renderer 'nicerthantriton.core/index
-                      :filterer post?
-                      :meta {:derived true})
+                      :filterer post?)
         (p/assortment :renderer 'nicerthantriton.core/topic
                       :filterer post?
-                      :grouper tagify
-                      :meta {:derived true})
-        (urls :filterer :derived)
+                      :grouper tagify)
         (recent-posts)
         (topics)
         (p/render :renderer 'nicerthantriton.core/post
                   :filterer post?)
         (p/render :renderer 'nicerthantriton.core/page)
-        (p/atom-feed :filterer post?)
-        #_(p/print-meta)))
+        (p/sitemap :filterer #(not= (:slug %) "404"))
+        #_(p/print-meta :extensions [".html"])))
 
 (deftask dev
   "Build nicerthantriton.com dev environment with reloading"
@@ -177,7 +155,7 @@
   (comp (serve :resource-root "public/")
         (watch)
         (build :tier :dev)
-        (reload :asset-path "/public")
+        (reload :asset-path "/public" :port 62728 :ws-port 62728)
         (cljs)
         #_(p/print-meta)))
 
