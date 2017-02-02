@@ -1,2 +1,4 @@
 .nrepl*
 aws.edn
+.DS_Store
+cider-repl-history
