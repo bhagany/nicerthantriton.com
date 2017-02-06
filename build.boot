@@ -1,14 +1,15 @@
 (set-env!
  :source-paths #{"src" "content"}
  :resource-paths #{"resources"}
- :dependencies '[[boot/core "2.7.1" :scope "provided"]
+ :dependencies '[[boot/core "2.7.1"]
                  [org.clojure/tools.nrepl "0.2.12"]
                  [pandeiro/boot-http "0.7.6" :exclusions [org.clojure/clojure]]
-                 [adzerk/boot-cljs "1.7.228-2" :scope "test"]
-                 [adzerk/boot-reload "0.4.13" :scope "test"]
+                 [adzerk/boot-cljs "1.7.228-2"]
+                 [adzerk/boot-reload "0.4.13"]
                  [hashobject/boot-s3 "0.1.2-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [hiccup "1.0.5" :exclusions [org.clojure/clojure]]
-                 [perun "0.4.1-SNAPSHOT" :scope "test"]])
+                 [perun "0.4.1-SNAPSHOT"]]
+ :checkouts '[[perun "0.4.1-SNAPSHOT"]])
 
 (require '[boot.core :as boot]
          '[boot.pod :as pod]
